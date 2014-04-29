@@ -47,9 +47,9 @@ Puppet::Type.type(:vcsrepo).provide(:git, :parent => Puppet::Provider::Vcsrepo) 
   end
 
   def revision
-    update_references
     current = at_path { git_with_identity('rev-parse', 'HEAD').chomp }
-    return current unless @resource.value(:revision)
+    return current unless @resource.value(:revision) && current != @resource.value(:revision)
+    update_references
 
     if tag_revision?(@resource.value(:revision))
       canonical = at_path { git_with_identity('rev-parse', @resource.value(:revision)).chomp }
